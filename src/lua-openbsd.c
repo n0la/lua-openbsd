@@ -7,7 +7,7 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
-#include <lua-pledge/config.h>
+#include <config.h>
 
 static void lo_die(lua_State *L, char const *e)
 {
