@@ -33,7 +33,6 @@ int lua_pledge(lua_State *L)
     char **dirs = NULL;
     int ret = 0;
     size_t idx = 0;
-    size_t sz = 0;
     int top = 0;
 
 #ifndef HAVE_PLEDGE
@@ -55,9 +54,9 @@ int lua_pledge(lua_State *L)
 
     /* This is the code if whitelists are enabled again.
      */
-#if 0
+#ifdef HAVE_PLEDGE_WHITELIST
     if (!lua_isnoneornil(L, 2)) {
-        sz = 1;
+        size_t sz = 1;
         dirs = calloc(2, sizeof(char*));
         if (dirs == NULL) {
             lo_die(L, "pledge: calloc");

@@ -4,6 +4,7 @@
 /* Do we have the pledge() system call?
  */
 #cmakedefine HAVE_PLEDGE
+/* #define HAVE_PLEDGE_WHITELIST */
 
 /* Do we have arc4random()?
  */
