@@ -36,6 +36,10 @@ int lua_pledge(lua_State *L)
     size_t sz = 0;
     int top = 0;
 
+#ifndef HAVE_PLEDGE
+    lo_die(L, "pledge: not supported");
+#endif
+
     top = lua_gettop(L);
 
     luaL_argcheck(L, lua_isstring(L, 1), 1,
@@ -47,7 +51,6 @@ int lua_pledge(lua_State *L)
         lo_die(L, "pledge: too many arguments");
     }
 
-#ifdef HAVE_PLEDGE
     farg = lua_tostring(L, 1);
 
     /* This is the code if whitelists are enabled again.
@@ -92,17 +95,12 @@ int lua_pledge(lua_State *L)
     ret = pledge(farg, (char const **)dirs);
     free_strings(dirs, idx+1);
 
-#endif
-
     lua_pushnumber(L, ret);
-
-#ifdef HAVE_PLEDGE
     if (ret == -1) {
         lua_pushstring(L, strerror(errno));
         return 2;
     }
 
-#endif
     return 1;
 }
 
