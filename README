@@ -1,0 +1,37 @@
+OpenBSD Lua Library
+
+Implements:
+
+ o pledge()
+ o arc4random()
+ o arc4random_uniform()
+
+Build:
+
+ $ mkdir build && cd build
+ $ cmake .. -DMODLUA_VERSION=51
+ $ make
+ $ make install
+
+Usage:
+
+ #!/usr/bin/env lua51
+
+ o = require('openbsd')
+ ret, error_string = o.pledge('rpath stdio')
+ if ret == -1 then
+    error(error_string)
+ end
+
+Or:
+
+ #!/usr/bin/env lua51
+
+ o = require('openbsd')
+
+ for i = 1, 10 do
+     print(o.arc4random_uniform(20))
+ end
+
+Written by Florian Stinglmayr <florian@n0la.org>
+Copyright (c) 2016, All Rights Reserved

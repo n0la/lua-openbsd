@@ -1,0 +1,16 @@
+#ifndef LUA_PLEDGE_CONFIG_H
+#define LUA_PLEDGE_CONFIG_H
+
+/* Do we have the pledge() system call?
+ */
+#cmakedefine HAVE_PLEDGE
+
+/* Do we have arc4random()?
+ */
+#cmakedefine HAVE_ARC4RANDOM
+
+/* Do we have arc4random_uniform()?
+ */
+#cmakedefine HAVE_ARC4RANDOM_UNIFORM
+
+#endif
