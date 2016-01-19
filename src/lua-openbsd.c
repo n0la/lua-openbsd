@@ -52,9 +52,6 @@ int lua_pledge(lua_State *L)
 
     farg = lua_tostring(L, 1);
 
-    /* This is the code if whitelists are enabled again.
-     */
-#ifdef HAVE_PLEDGE_WHITELIST
     if (!lua_isnoneornil(L, 2)) {
         size_t sz = 1;
         dirs = calloc(2, sizeof(char*));
@@ -89,7 +86,6 @@ int lua_pledge(lua_State *L)
             lua_pop(L, 1);
         }
     }
-#endif
 
     ret = pledge(farg, (char const **)dirs);
     free_strings(dirs, idx+1);
