@@ -15,24 +15,11 @@ static void lo_die(lua_State *L, char const *e)
     lua_error(L);
 }
 
-static void free_strings(char **str, size_t n)
-{
-    size_t i = 0;
-
-    if (str) {
-        for (; i < n; i++) {
-            free(str[i]);
-        }
-    }
-    free(str);
-}
-
 int lua_pledge(lua_State *L)
 {
     char const *farg = NULL;
-    char **dirs = NULL;
+    char const *earg = NULL;
     int ret = 0;
-    size_t idx = 0;
     int top = 0;
 
 #ifndef HAVE_PLEDGE
@@ -44,51 +31,16 @@ int lua_pledge(lua_State *L)
     luaL_argcheck(L, lua_isstring(L, 1), 1,
                   "pledge: first argument must be string");
     if (top == 2) {
-        luaL_argcheck(L, lua_istable(L, 2), 1,
-                      "pledge: second argument must be table");
+        luaL_argcheck(L, lua_isstring(L, 2), 1,
+                      "pledge: second argument must be string");
     } else if (top > 2) {
         lo_die(L, "pledge: too many arguments");
     }
 
     farg = lua_tostring(L, 1);
+    earg = lua_tostring(L, 2);
 
-    if (!lua_isnoneornil(L, 2)) {
-        size_t sz = 1;
-        dirs = calloc(2, sizeof(char*));
-        if (dirs == NULL) {
-            lo_die(L, "pledge: calloc");
-        }
-
-        lua_pushnil(L);
-        while (lua_next(L, 2)) {
-            if (lua_isstring(L, -1)) {
-                char const *str = lua_tostring(L, -1);
-
-                if (idx == (sz-1)) {
-                    char **tmp = NULL;
-
-                    tmp = reallocarray(dirs, sz+10, sizeof(char*));
-                    if (tmp == NULL) {
-                        free_strings(dirs, idx+1);
-                        lo_die(L, "pledge: calloc()");
-                    }
-                    dirs = tmp;
-                    sz = sz + 10;
-                }
-
-                dirs[idx] = strdup(str);
-                if (dirs[idx] == NULL) {
-                    free_strings(dirs, idx+1);
-                    lo_die(L, "pledge: strdup");
-                }
-                ++idx;
-            }
-            lua_pop(L, 1);
-        }
-    }
-
-    ret = pledge(farg, (char const **)dirs);
-    free_strings(dirs, idx+1);
+    ret = pledge(farg, earg);
 
     lua_pushnumber(L, ret);
     if (ret == -1) {

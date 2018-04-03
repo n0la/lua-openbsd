@@ -8,13 +8,13 @@ Implements:
 
 Works and has been tested on Lua 5.1, 5.2 and 5.3.
 
-Note that pledge() (on the 19th January of 2016) will fail if you
-give it a list of paths as the second parameter:
+Note that pledge() pre 6.3 takes an optional set of paths
+as the second argument.
 
  -- OK
  o.pledge('rpath stdio')
  -- Error
- o.pledge('rpath stdio', {})
+ o.pledge('rpath stdio', 'stdio')
 
 Build:
 
