@@ -8,11 +8,9 @@ print(ret, s)
 ret, s = o.pledge("rpath stdio", {})
 print(ret, s)
 
--- Same as pledge("rpath", { "/var", "/home", ..., NULL })
-ret, s = o.pledge("rpath stdio", {"/var", "/home", "/test", "/more",
-                                  "/asdf", "/test", "/stuff", "/meh",
-                                  "/alestorm", "/tbdm", "/opeth",
-                                  "/atthegates"})
+-- Same as pledge("rpath stdio wpath", "rpath stdio")
+ret, s = o.pledge("rpath stdio wpath", "rpath stdio")
+
 print(ret, s)
 
 print(o.arc4random())
