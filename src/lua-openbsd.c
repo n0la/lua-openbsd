@@ -98,6 +98,11 @@ int lua_unveil(lua_State *L)
     ret = unveil(path, mode);
     lua_pushnumber(L, ret);
 
+    if (ret == -1) {
+        lua_pushstring(L, strerror(errno));
+        return 2;
+    }
+
     return 1;
 }
 
