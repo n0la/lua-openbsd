@@ -44,5 +44,5 @@ Or:
      print(o.arc4random_uniform(20))
  end
 
-Written by Florian Stinglmayr <florian@n0la.org>
+Written by Florian Stinglmayr <fstinglmayr@gmail.com>
 Copyright (c) 2016, All Rights Reserved
