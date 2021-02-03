@@ -78,6 +78,29 @@ int lua_arc4random_uniform(lua_State *L)
     return 1;
 }
 
+int lua_unveil(lua_State *L)
+{
+    char const *path = NULL, *mode = NULL;
+    int ret = 0;
+
+#ifndef HAVE_UNVEIL
+    lo_die(L, "unveil: not supported");
+#endif
+
+    luaL_argcheck(L, lua_isstring(L, 1), 1,
+                  "unveil: first argument must be string");
+    luaL_argcheck(L, lua_isstring(L, 2), 1,
+                  "unveil: second argument must be string");
+
+    path = lua_tostring(L, 1);
+    mode = lua_tostring(L, 2);
+
+    ret = unveil(path, mode);
+    lua_pushnumber(L, ret);
+
+    return 1;
+}
+
 #if !defined LUA_VERSION_NUM || LUA_VERSION_NUM==501
 /* Adapted from Lua 5.2.0
  */
@@ -100,6 +123,7 @@ static const struct luaL_Reg l_pledge[] = {
     { "pledge", lua_pledge },
     { "arc4random", lua_arc4random },
     { "arc4random_uniform", lua_arc4random_uniform },
+    { "unveil", lua_unveil },
     { NULL, NULL },
 };
 

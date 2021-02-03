@@ -13,4 +13,8 @@
  */
 #cmakedefine HAVE_ARC4RANDOM_UNIFORM
 
+/* Do we have unveil()?
+ */
+#cmakedefine HAVE_UNVEIL
+
 #endif

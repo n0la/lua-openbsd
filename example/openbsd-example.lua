@@ -1,11 +1,11 @@
 o = require("openbsd")
 
+-- Test out unveil
+ret = o.unveil(".", "rwx")
+print("unveil: " .. ret)
+
 -- Same as pledge("rpath", NULL)
 ret, s = o.pledge("rpath stdio")
-print(ret, s)
-
--- Same as pledge("rpath", { NULL })
-ret, s = o.pledge("rpath stdio", {})
 print(ret, s)
 
 -- Same as pledge("rpath stdio wpath", "rpath stdio")
