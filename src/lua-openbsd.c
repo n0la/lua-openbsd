@@ -2,12 +2,16 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <limits.h>
+
+#include <bsd_auth.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
 #include <config.h>
+
 
 static void lo_die(lua_State *L, char const *e)
 {
@@ -106,6 +110,33 @@ int lua_unveil(lua_State *L)
     return 1;
 }
 
+char* checkString_or_nil(lua_State *L, int index, char* buf, size_t bufsize)
+{
+    if (lua_isnoneornil(L, index)) return NULL;
+    strlcpy(buf, luaL_checkstring(L, index), bufsize);
+    return buf;
+}
+
+int lua_userokay(lua_State *L)
+{
+    size_t NAMELEN = LOGIN_NAME_MAX + 1 + NAME_MAX + 1;
+    size_t TYPELEN = 128;
+    size_t PASSLEN = 2048;
+
+    char usernamebuf[NAMELEN];
+    char stylebuf[TYPELEN];
+    char typebuf[TYPELEN];
+    char passwordbuf[PASSLEN];
+
+    char *username = checkString_or_nil(L, 1, usernamebuf, NAMELEN);
+    char *style = checkString_or_nil(L, 2, stylebuf, TYPELEN);
+    char *type = checkString_or_nil(L, 3, typebuf, TYPELEN);
+    char *password = checkString_or_nil(L, 4, passwordbuf, PASSLEN);
+
+    lua_pushboolean(L, auth_userokay(username, style, type, password));
+    return 1;
+}
+
 #if !defined LUA_VERSION_NUM || LUA_VERSION_NUM==501
 /* Adapted from Lua 5.2.0
  */
@@ -129,6 +160,7 @@ static const struct luaL_Reg l_pledge[] = {
     { "arc4random", lua_arc4random },
     { "arc4random_uniform", lua_arc4random_uniform },
     { "unveil", lua_unveil },
+    { "auth_userokay", lua_userokay },
     { NULL, NULL },
 };
 
