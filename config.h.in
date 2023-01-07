@@ -17,4 +17,8 @@
  */
 #cmakedefine HAVE_UNVEIL
 
+/* Do we have auth_userokay()?
+ */
+#cmakedefine HAVE_AUTH_USEROKAY
+
 #endif

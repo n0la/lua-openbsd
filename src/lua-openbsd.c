@@ -110,14 +110,14 @@ int lua_unveil(lua_State *L)
     return 1;
 }
 
-char* checkString_or_nil(lua_State *L, int index, char* buf, size_t bufsize)
+char* check_string_or_nil(lua_State *L, int index, char* buf, size_t bufsize)
 {
     if (lua_isnoneornil(L, index)) return NULL;
     strlcpy(buf, luaL_checkstring(L, index), bufsize);
     return buf;
 }
 
-int lua_userokay(lua_State *L)
+int lua_auth_userokay(lua_State *L)
 {
     size_t NAMELEN = LOGIN_NAME_MAX + 1 + NAME_MAX + 1;
     size_t TYPELEN = 128;
@@ -128,10 +128,14 @@ int lua_userokay(lua_State *L)
     char typebuf[TYPELEN];
     char passwordbuf[PASSLEN];
 
-    char *username = checkString_or_nil(L, 1, usernamebuf, NAMELEN);
-    char *style = checkString_or_nil(L, 2, stylebuf, TYPELEN);
-    char *type = checkString_or_nil(L, 3, typebuf, TYPELEN);
-    char *password = checkString_or_nil(L, 4, passwordbuf, PASSLEN);
+    char *username = check_string_or_nil(L, 1, usernamebuf, NAMELEN);
+    char *style = check_string_or_nil(L, 2, stylebuf, TYPELEN);
+    char *type = check_string_or_nil(L, 3, typebuf, TYPELEN);
+    char *password = check_string_or_nil(L, 4, passwordbuf, PASSLEN);
+
+#ifndef HAVE_AUTH_USEROKAY
+    lo_die(L, "auth_userokay: not supported");
+#endif
 
     lua_pushboolean(L, auth_userokay(username, style, type, password));
     return 1;
@@ -160,7 +164,7 @@ static const struct luaL_Reg l_pledge[] = {
     { "arc4random", lua_arc4random },
     { "arc4random_uniform", lua_arc4random_uniform },
     { "unveil", lua_unveil },
-    { "auth_userokay", lua_userokay },
+    { "auth_userokay", lua_auth_userokay },
     { NULL, NULL },
 };
 
