@@ -8,7 +8,7 @@ Implements:
  o unveil()
  o auth_userokay()
 
-Works and has been tested on Lua 5.1, 5.2 and 5.3.
+Works and has been tested on Lua 5.1, 5.2, 5.3 and 5.4.
 
 Note that pledge() pre 6.3 takes an optional set of paths
 as the second argument.
@@ -21,7 +21,7 @@ as the second argument.
 Build:
 
  $ mkdir build && cd build
- $ cmake .. -DMODLUA_VERSION=5.1
+ $ cmake .. -DMODLUA_VERSION=5.4
  $ make
  $ make install
 
@@ -37,7 +37,7 @@ Usage:
 
 Or:
 
- #!/usr/bin/env lua51
+ #!/usr/bin/env lua54
 
  o = require('openbsd')
 
