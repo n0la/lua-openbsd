@@ -91,13 +91,17 @@ int lua_unveil(lua_State *L)
     lo_die(L, "unveil: not supported");
 #endif
 
-    luaL_argcheck(L, lua_isstring(L, 1), 1,
-                  "unveil: first argument must be string");
-    luaL_argcheck(L, lua_isstring(L, 2), 1,
-                  "unveil: second argument must be string");
+    if (!lua_isnoneornil(L, 1)) {
+        luaL_argcheck(L, lua_isstring(L, 1), 1,
+                      "unveil: first argument must be string");
+        path = lua_tostring(L, 1);
+    }
 
-    path = lua_tostring(L, 1);
-    mode = lua_tostring(L, 2);
+    if (!lua_isnoneornil(L, 2)) {
+        luaL_argcheck(L, lua_isstring(L, 2), 2,
+                  "unveil: second argument must be string");
+        mode = lua_tostring(L, 2);
+    }
 
     ret = unveil(path, mode);
     lua_pushnumber(L, ret);
